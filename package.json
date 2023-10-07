@@ -1,0 +1,29 @@
+{
+  "name": "ts-learn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write src/**/*.ts",
+    "build": "tsc",
+    "build:commands": "",
+    "dev": "tsc-watch -p tsconfig.json --onSuccess \"node --experimental-specifier-resolution=node ./dist/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": "./dist/index.js",
+  "devDependencies": {
+    "@types/node": "^20.8.2",
+    "prettier": "^3.0.3",
+    "tsc-watch": "^6.0.4",
+    "tslog": "^4.9.2",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1"
+  }
+}
