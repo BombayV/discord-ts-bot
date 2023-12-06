@@ -1,5 +1,4 @@
-import {Client, IntentsBitField} from "discord.js";
-import {EventManager} from "./EventManager";
+import {ActivityOptions, Client, ClientPresence, IntentsBitField, PresenceData} from "discord.js";
 import { Logger } from "tslog";
 
 type BotManagerOptions = {
@@ -9,11 +8,12 @@ type BotManagerOptions = {
   name: string
 }
 
+type ActivityType = "online" | "idle" | "dnd" | "invisible";
+
 class BotManager {
   private static instance: BotManager;
   private static client: Client | null = null;
   private static privateData: BotManagerOptions | null = null;
-  private static eventManager: EventManager | null = null;
   private static logger: Logger<string> | null = null;
 
   private constructor() {
@@ -24,13 +24,26 @@ class BotManager {
     BotManager.logger.info('BotManager instance created');
   }
 
-
   // Setters
   public setPrivateData(data: BotManagerOptions) {
     if (BotManager.privateData === null) {
       BotManager.privateData = data;
     }
 
+    return this;
+  }
+
+  public setPresence(status: ActivityType, activity: ActivityOptions | null = null) {
+    if (BotManager.client === null) {
+      new Error('BotManager client is null.');
+    }
+
+    BotManager.client.once('ready', () => {
+      BotManager.client.user.setPresence({
+        activities: [activity],
+        status: status,
+      });
+    });
     return this;
   }
 
@@ -43,18 +56,37 @@ class BotManager {
     return BotManager.instance;
   }
 
-  public getTest() {
-    return BotManager.privateData;
-  }
-
   // Methods
   private buildEvents() {
-    BotManager.eventManager = new EventManager(BotManager.client as Client);
-    BotManager.eventManager.test('hello');
+    return this;
+  }
+
+  private buildCommands() {
+    return this;
   }
 
   public build() {
-    this.buildEvents();
+    this.buildEvents().buildCommands();
+    BotManager.logger.info('BotManager built.');
+    return this;
+  }
+
+  public buildClient() {
+    try {
+      if (BotManager.privateData === null) {
+        new Error('BotManager privateData is null.');
+      }
+      BotManager.client = new Client({
+        intents: BotManager.privateData?.intents,
+      });
+      BotManager.client.login(BotManager.privateData.token).then(() => {
+        BotManager.logger.info('BotManager client logged in.');
+      }).catch((error) => {
+        BotManager.logger.fatal(`BotManager client failed to login: \n${error}`)
+      });
+    } catch (error) {
+      BotManager.logger.fatal(`BotManager failed to build client: \n${error}`);
+    }
     return this;
   }
 }
