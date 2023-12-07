@@ -1,3 +1,4 @@
+import server from '../http/server.js';
 import { Injections } from "../decorators/discord.decorator.js";
 import {CommandInteraction, Message} from "discord.js";
 import {Logger} from "tslog";
@@ -10,12 +11,18 @@ const logger = new Logger({
 
 @Discord
 export class EventManager {
-  constructor() {
-  }
-
   @Event()
-  public static ready() {
-
+  public static async ready() {
+    try {
+      await server.listen({
+        port: 3000,
+      })
+      // @ts-ignore
+      logger.warn(`Server listening on ${server.server.address().port}`);
+    } catch (err) {
+      logger.error(`Error while starting server: ${err}`);
+      process.exit(1);
+    }
   }
 
   @Event()
