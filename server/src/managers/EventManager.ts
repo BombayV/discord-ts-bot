@@ -18,6 +18,7 @@ export class EventManager {
   public static async ready() {
     try {
       await EventManager.svFastify.listen({
+        host: '0.0.0.0',
         port: 3000,
       })
       // @ts-ignore
