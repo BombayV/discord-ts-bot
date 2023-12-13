@@ -16,6 +16,7 @@ const intents = new IntentsBitField([
   'GuildPresences',
   'DirectMessages',
   'DirectMessageReactions',
+  'MessageContent'
 ]);
 
 

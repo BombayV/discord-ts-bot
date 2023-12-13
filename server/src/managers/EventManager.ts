@@ -11,14 +11,16 @@ const logger = new Logger({
 
 @Discord
 export class EventManager {
+  private static svFastify = server;
+
   @Event()
   public static async ready() {
     try {
-      await server.listen({
+      await EventManager.svFastify.listen({
         port: 3000,
       })
       // @ts-ignore
-      logger.warn(`Server listening on ${server.server.address().port}`);
+      logger.warn(`Server listening on ${EventManager.svFastify.server.address().port}`);
     } catch (err) {
       logger.error(`Error while starting server: ${err}`);
       process.exit(1);
@@ -32,7 +34,9 @@ export class EventManager {
 
   @Event()
   public static messageCreate(message: Message) {
-
+    for (const client of EventManager.svFastify.websocketServer.clients) {
+      client.send(message.content);
+    }
   }
 
   @Event()
