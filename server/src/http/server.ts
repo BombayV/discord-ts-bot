@@ -7,11 +7,14 @@ const fastify = Fastify({
 
 fastify.register(FastifyWebsocket);
 fastify.register(async function (fastify) {
-  fastify.get('/', { websocket: false} ,async function handler(req, rep) {
-    return {
-      hello: 'world'
-    }
-  });
+  fastify.route({
+    method: 'GET',
+    url: '/',
+    websocket: false,
+    handler: (request, reply) => {
+      reply.code(200).send({ message: 'Hello from Fastify!' });
+    },
+  })
 
   fastify.route({
     method: 'GET',
