@@ -9,7 +9,7 @@
     "format": "prettier --write src/**/*.ts",
     "build": "tsc",
     "start": "node --experimental-specifier-resolution=node ./dist/index.js",
-    "dev": "tsc-watch -p tsconfig.json --onSuccess \"node --experimental-specifier-resolution=node ./dist/index.js\""
+    "dev": "tsc-watch -p tsconfig.json --onSuccess \"node --enable-source-maps --experimental-specifier-resolution=node ./dist/index.js\""
   },
   "keywords": [],
   "author": "",
@@ -18,16 +18,16 @@
   "devDependencies": {
     "@types/node": "^20.10.4",
     "@types/ws": "^8.5.10",
-    "prettier": "^3.1.0",
+    "prettier": "^3.1.1",
     "tsc-watch": "^6.0.4",
     "tslog": "^4.9.2",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@fastify/websocket": "^8.2.0",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "fastify": "^4.24.3",
+    "fastify": "^4.25.0",
     "uuid": "^9.0.1"
   }
 }

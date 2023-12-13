@@ -7,6 +7,7 @@ const { Discord, Event } = Injections();
 const logger = new Logger({
   name: 'EventManager',
   type: 'pretty',
+  
 })
 
 @Discord
