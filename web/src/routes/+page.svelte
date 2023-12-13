@@ -5,7 +5,7 @@
   let messages: string[] = [];
 
   onMount(() => {
-    ws = new WebSocket('ws://obliged-noel-bombay.koyeb.app/ws');
+    ws = new WebSocket('wss://obliged-noel-bombay.koyeb.app/ws');
 
     ws.onmessage = (event) => {
       if (!isConnected && event.data) {
