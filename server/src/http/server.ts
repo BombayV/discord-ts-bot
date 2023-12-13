@@ -1,8 +1,12 @@
 import Fastify from 'fastify';
 import FastifyWebsocket from '@fastify/websocket'
+import cors from '@fastify/cors';
 
 const fastify = Fastify();
-fastify.register(FastifyWebsocket);
+await fastify.register(FastifyWebsocket);
+await fastify.register(cors, {
+  origin: '*',
+});
 
 fastify.route({
   method: 'GET',
