@@ -19,7 +19,7 @@ const intents = new IntentsBitField([
   'MessageContent'
 ]);
 
-console.log(process.env.NAME)
+
 await botManager.
   setPrivateData({
     id: process.env.ID as string,
