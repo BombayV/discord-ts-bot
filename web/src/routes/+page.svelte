@@ -1,38 +1,15 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  let isConnected: boolean = false;
-  let ws: WebSocket | null = null;
-  let messages: string[] = [];
-
-  onMount(() => {
-    ws = new WebSocket('wss://obliged-noel-bombay.koyeb.app/ws');
-
-    ws.onmessage = (event) => {
-      if (!isConnected && event.data) {
-        isConnected = true;
-        console.log('connected');
-      } else {
-        messages = [...messages, event.data as string];
-      }
-    };
-
-    ws.onclose = () => {
-      console.log('disconnected');
-      isConnected = false;
-    };
-  });
+<script>
+  import { Button } from 'flowbite-svelte';
 </script>
 
-<div>
-  {#if isConnected}
-    <p>Connected</p>
-  {:else}
-    <p>Not connected</p>
-  {/if}
-</div>
-{#if ws && isConnected}
-  {#each messages as message}
-    <p>{message}</p>
-  {/each}
-  <button on:click={() => ws?.close()}>Disconnect</button>
-{/if}
+<form
+    class="w-96 flex flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+    action="?/login"
+    method="POST"
+>
+  <div class="flex flex-col mb-8 gap-y-2 text-center">
+    <h1 class="text-4xl font-bold">Bombay Bot</h1>
+    <p class="font-light">Login to your Discord account</p>
+  </div>
+  <Button type="submit">Login account</Button>
+</form>
