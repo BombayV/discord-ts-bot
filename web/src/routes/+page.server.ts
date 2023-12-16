@@ -5,7 +5,7 @@ import { redirect } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ url, locals: { getSession } }) => {
   const session = await getSession();
   if (session) {
-    throw redirect(303, '/dashboard');
+    redirect(303, '/dashboard');
   }
 
   return {
@@ -19,14 +19,14 @@ export const actions: Actions = {
   login: async ({cookies}) => {
     const authToken = cookies.get('dc:access_token');
     if (authToken) {
-      throw redirect(303, '/dashboard');
+      redirect(303, '/dashboard');
     }
 
     const refreshToken = cookies.get('dc:refresh_token');
     if (refreshToken) {
-      throw redirect(303, '/auth/refresh');
+      redirect(303, '/auth/refresh');
     }
 
-    throw redirect(303, AUTH_URL);
+    redirect(303, AUTH_URL);
   }
 };

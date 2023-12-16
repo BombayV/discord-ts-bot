@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ url , fetch, cookies }) => {
   const code = url.searchParams.get('code');
   if (!code) {
     console.error('GET: No code provided')
-    throw redirect(302, '/');
+    redirect(302, '/');
   }
 
   const formData = {

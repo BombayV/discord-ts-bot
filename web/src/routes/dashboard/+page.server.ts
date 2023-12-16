@@ -16,7 +16,7 @@ export const actions: Actions = {
         sameSite: 'strict',
         secure: true,
       });
-      throw redirect(302, '/');
+      redirect(302, '/');
     }
   }
 }

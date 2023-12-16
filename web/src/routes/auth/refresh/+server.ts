@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ url , fetch, cookies }) => {
   const refresh_token = url.searchParams.get('code');
   if (!refresh_token) {
     console.log('GET: No refresh_token provided')
-    throw redirect(302, '/');
+    redirect(302, '/');
   }
 
   const formData = {
