@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DiscordUser } from "$lib/typings/DiscordUser";
   import type {DiscordGuild} from "$lib/typings/DiscordGuild";
-  import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, ImagePlaceholder, Skeleton, TextPlaceholder, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider } from 'flowbite-svelte';
+  import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
   import { page } from '$app/stores';
   import { enhance } from '$app/forms';
@@ -10,11 +10,11 @@
 
   export let data;
 
-  $: user.set(data.props.user)
-  $: servers.set(data.props.servers)
   const user = writable<DiscordUser | null>(null);
   const servers = writable<DiscordGuild[]>([]);
 
+  $: user.set(data.props.user)
+  $: servers.set(data.props.servers)
   $: activeUrl = $page.url.pathname;
 
   let loading = false;
@@ -31,11 +31,11 @@
   setContext('servers', servers)
 </script>
 
-<div class="relative px-8">
+<div class="relative">
   <Navbar class="px-2 sm:px-4 py-2.5 fixed w-full z-20 top-0 left-0 border-b">
-    <NavBrand href="/dashboard">
-      <img src="https://flowbite-svelte.com/images/flowbite-svelte-icon-logo.svg" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
-      <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Bombay Bot</span>
+    <NavBrand href="/dashboard" class="px-6 gap-x-4">
+      <img src="/images/bot.png" class="h-8 sm:h-10" alt="Flowbite Logo" />
+      <span class="self-center whitespace-nowrap text-xl font-semibold text-text-800">Bombay Bot</span>
     </NavBrand>
     <div class="flex items-center md:order-2">
       <Avatar id="avatar-menu" class="cursor-pointer" src={$user?.avatar} alt="Avatar" />
@@ -85,11 +85,5 @@
       </Dropdown>
     </NavUl>
   </Navbar>
-  <div style="height:800px;" class="overflow-scroll pb-16">
-    <Skeleton class="mt-16 mb-8" />
-    <ImagePlaceholder class="my-8" />
-    <TextPlaceholder class="my-8" />
-  </div>
-  {activeUrl}
   <slot/>
 </div>

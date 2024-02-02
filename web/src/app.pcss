@@ -2,3 +2,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: local('Plus Jakarta Sans'), url('/fonts/PlusJakartaSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: local('Outfit'), url('/fonts/Outfit-VariableFont_wght.ttf') format('truetype');
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --text-50: #f3eff5;
+    --text-100: #e8dfec;
+    --text-200: #d0c0d8;
+    --text-300: #b9a0c5;
+    --text-400: #a181b1;
+    --text-500: #8a619e;
+    --text-600: #6e4e7e;
+    --text-700: #533a5f;
+    --text-800: #37273f;
+    --text-900: #1c1320;
+    --text-950: #0e0a10;
+
+    --background-50: #f5f0f5;
+    --background-100: #ebe0eb;
+    --background-200: #d6c2d6;
+    --background-300: #c2a3c2;
+    --background-400: #ad85ad;
+    --background-500: #996699;
+    --background-600: #7a527a;
+    --background-700: #5c3d5c;
+    --background-800: #3d293d;
+    --background-900: #1f141f;
+    --background-950: #0f0a0f;
+
+    --primary-50: #f4ecf8;
+    --primary-100: #e9daf1;
+    --primary-200: #d2b4e4;
+    --primary-300: #bc8fd6;
+    --primary-400: #bc8fd6;
+    --primary-500: #bc8fd6;
+    --primary-600: #a669c9;
+    --primary-700: #8f44bb;
+    --primary-800: #7a399f;
+    --primary-900: #642f83;
+    --primary-950: #2f1841;
+
+    --secondary-50: #f4ebfa;
+    --secondary-100: #ead6f5;
+    --secondary-200: #d4aeea;
+    --secondary-300: #bf85e0;
+    --secondary-400: #a95dd5;
+    --secondary-500: #9434cb;
+    --secondary-600: #762aa2;
+    --secondary-700: #591f7a;
+    --secondary-800: #3b1551;
+    --secondary-900: #1e0a29;
+    --secondary-950: #0f0514;
+
+    --accent-50: #f5e9fb;
+    --accent-100: #ead3f8;
+    --accent-200: #d6a7f1;
+    --accent-300: #c17bea;
+    --accent-400: #ad50e2;
+    --accent-500: #9824db;
+    --accent-600: #7a1daf;
+    --accent-700: #5b1584;
+    --accent-800: #3d0e58;
+    --accent-900: #1e072c;
+    --accent-950: #0f0416;
+  }
+}
+
+@layer base {
+  body {
+    @apply font-outfit;
+  }
+}
+
+@layer components {
+  .text-gradient {
+    background: linear-gradient(90deg, #bc8fd6, #8f44bb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-gradient 5s ease infinite;
+  }
+
+  .bg-glass-primary {
+    /* From https://css.glass */
+    /* From https://css.glass */
+    background: rgba(233, 215, 244, 0.67);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5.4px);
+    -webkit-backdrop-filter: blur(5.4px);
+    border: 1px solid rgba(225, 180, 255, 0.2);
+  }
+
+  .bg-glass-secondary {
+    /* From https://css.glass */
+    background: rgba(221, 190, 240, 0.62);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5.4px);
+    -webkit-backdrop-filter: blur(5.4px);
+    border: 1px solid rgba(225, 180, 255, 0.2);
+  }
+
+  .bg-glass-white {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+}
