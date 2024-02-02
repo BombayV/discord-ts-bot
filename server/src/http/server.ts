@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import FastifyWebsocket from '@fastify/websocket'
 import cors from '@fastify/cors';
+import { addServer } from "../utils/ServersMap.js";
 
 const fastify = Fastify();
 await fastify.register(FastifyWebsocket);
@@ -25,10 +26,14 @@ fastify.route({
   },
   wsHandler: (connection, request) => {
     connection.socket.on('message', (message) => {
-      console.log('Received message: ', message);
+      // Read buffer message
+      const { type, data } = JSON.parse(message.toString());
+      switch (type) {
+        case 'server_id':
+          addServer(data.server_id, true);
+          break;
+      }
     });
-
-    connection.socket.send('Hello from WebSocket server');
   },
 });
 
