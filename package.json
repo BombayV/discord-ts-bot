@@ -8,5 +8,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "packageManager": "pnpm@9.0.0-alpha.1+sha256.b69b1d3f02c65bc22864fa219a175fdd2f36cd5f245da2915e87482f19338383"
 }
