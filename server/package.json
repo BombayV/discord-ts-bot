@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "exports": "./dist/index.js",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.0.0-alpha.1+sha256.b69b1d3f02c65bc22864fa219a175fdd2f36cd5f245da2915e87482f19338383",
   "devDependencies": {
     "@types/node": "^20.11.16",
     "@types/ws": "^8.5.10",
