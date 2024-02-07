@@ -2,6 +2,7 @@ import server from '../http/server.js';
 import { Injections } from "../decorators/discord.decorator.js";
 import {CommandInteraction, Message} from "discord.js";
 import {Logger} from "tslog";
+import HostEventManager from "./HostEventManager.js";
 
 const { Discord, Event } = Injections();
 const logger = new Logger({
@@ -37,17 +38,22 @@ export class EventManager {
   @Event()
   public static messageCreate(message: Message) {
     for (const client of EventManager.svFastify.websocketServer.clients) {
-      const filteredMessage = {
-        type: 'message',
-        data: {
-          id: message.id,
-          content: message.attachments && !message.content ? 'Sent an attachment' : message.content,
-          author: message.author.username,
-          channelId: message.channelId,
-          channelName: message.guild.channels.cache.get(message.channelId)?.name,
+      if (HostEventManager.getInstance().getHost(message.guild.id) !== undefined) {
+        // @ts-ignore
+        if (client.id !== message.guild.id) continue;
+
+        const filteredMessage = {
+          type: 'message',
+          data: {
+            id: message.id,
+            content: message.attachments && !message.content ? 'Sent an attachment' : message.content,
+            author: message.author.username,
+            channelId: message.channelId,
+            channelName: message.guild.channels.cache.get(message.channelId)?.name,
+          }
         }
+        client.send(JSON.stringify(filteredMessage));
       }
-      client.send(JSON.stringify(filteredMessage));
     }
   }
 

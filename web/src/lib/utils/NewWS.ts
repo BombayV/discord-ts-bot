@@ -5,7 +5,7 @@ export const NewWS = () => {
     return null;
   }
 
-  const hostUrl = HOST.includes('http') ? `wss://${HOST.replace('https://', '')}` : `wss://${HOST}`;
+  const hostUrl = HOST.includes('https') ? `wss://${HOST.replace('https://', '')}` : `ws://${HOST.replace('http://', '')}`;
 
   return new WebSocket(`${hostUrl}/ws`);
 }

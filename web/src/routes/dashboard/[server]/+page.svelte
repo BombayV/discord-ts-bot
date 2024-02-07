@@ -1,18 +1,13 @@
 <script lang="ts">
   import {getContext, onMount} from "svelte";
   import { NewWS } from "$lib/utils/NewWS";
-  import {Button, Input, Label} from "flowbite-svelte";
+  import {Button, Input } from "flowbite-svelte";
   import type {DiscordMessage} from "$lib/typings/DiscordMessage";
   import type {PanelOption} from "$lib/typings/PanelOption";
+  import {fetcher} from "$lib/utils/fetcher";
+  import { page } from "$app/stores";
 
   export let data;
-
-  let ws: WebSocket | null = null;
-  let isConnected: boolean = false;
-  let currentMessages: DiscordMessage[] = [];
-  const user = getContext("user");
-  const servers = getContext("servers");
-  const currentServer = $servers.find(s => s.id === data.server);
 
   const serverOptions: Array<PanelOption> = [
     {
@@ -68,6 +63,41 @@
     }
   ]
 
+
+
+  let currentData;
+  $: data,  (()=>{
+    // and here you do the update (its like watch in vuejs)
+    // document.title = `Page ${data.title}`;
+    console.log(data)
+    currentData = data;
+  })();
+
+  let ws: WebSocket | null = null;
+  let isConnected = false;
+  let currentMessages: DiscordMessage[] = [];
+  $: currentNickname = "";
+  $: currentDefaultData = {
+    membersSize: 0,
+    textChannelsSize: 0,
+    voiceChannelsSize: 0,
+    rolesSize: 0
+  }
+  const user = getContext("user");
+  const servers = getContext("servers");
+  $: currentServer = $servers.find(s => s.id === currentData.server);
+
+  const postNickname = async () => {
+    const resp = await fetcher('/setNickname', {
+      nickname: currentNickname,
+      server_id: currentData.server
+    })
+
+    if (resp.status === 200) {
+      console.log("Nickname updated");
+    }
+  }
+
   onMount(() => {
     ws = NewWS() as WebSocket;
     if (!ws) return;
@@ -89,12 +119,28 @@
       const data = JSON.parse(e.data);
       if (data.type === "message") {
         currentMessages = [...currentMessages, data.data];
+      } else if (data.type === 'default_data') {
+        currentDefaultData = {
+          membersSize: data.data.membersSize,
+          textChannelsSize: data.data.textChannelsSize,
+          voiceChannelsSize: data.data.voiceChannelsSize,
+          rolesSize: data.data.rolesSize
+        }
+        currentNickname = data.data.nickname;
       }
     }
 
     ws.onclose = () => {
       console.log("disconnected");
       isConnected = false;
+      if (ws) {
+        ws.send(JSON.stringify({
+          type: "disconnect",
+          data: {
+            server_id: data.server
+          }
+        }))
+      }
     }
 
     return () => {
@@ -118,18 +164,20 @@
     <div class="flex flex-col gap-y-4">
       <div class="bg-glass-primary rounded-lg px-5 py-4 gap-y-1 flex flex-col text-sm">
         <p class="uppercase font-semibold tracking-widest mb-2">Server Info</p>
-        <p class="flex justify-between gap-x-2">Members: <span>2</span></p>
-        <p class="flex justify-between gap-x-2">Text Channels: <span>2</span></p>
-        <p class="flex justify-between gap-x-2">Voice Channels: <span>2</span></p>
-        <p class="flex justify-between gap-x-2">Roles: <span>2</span></p>
+        <p class="flex justify-between gap-x-2">Members: <span>{currentDefaultData.membersSize || 0}</span></p>
+        <p class="flex justify-between gap-x-2">Text Channels: <span>{currentDefaultData.textChannelsSize || 0}</span></p>
+        <p class="flex justify-between gap-x-2">Voice Channels: <span>{currentDefaultData.voiceChannelsSize || 0}</span></p>
+        <p class="flex justify-between gap-x-2">Roles: <span>{currentDefaultData.rolesSize || 0}</span></p>
       </div>
       <div class="bg-glass-primary rounded-lg px-5 py-4 gap-y-1 flex flex-col text-sm">
         <p class="uppercase font-semibold tracking-widest mb-2">Bot Settings</p>
         <div class="flex flex-col gap-y-2">
           <p class="text-sm">Nickname</p>
-          <Input type="text" id="bot_name" placeholder="Bombay Bot" size="sm"/>
+          <Input type="text" id="bot_name" placeholder="Bombay Bot" size="sm" value={currentNickname} on:input={(e) => currentNickname = e.target.value} />
         </div>
-        <Button class="w-16 mt-2" size="xs">Save</Button>
+        <Button class="w-16 mt-2" size="xs"
+          on:click={postNickname}
+        >Save</Button>
       </div>
     </div>
     <div class="bg-glass-primary rounded-lg px-5 py-4 max-h-[22rem] min-h-40 overflow-y-auto flex flex-col h-full">

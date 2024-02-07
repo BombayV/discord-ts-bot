@@ -1,6 +1,7 @@
 import { REST, Routes, ActivityOptions, Client, Collection, IntentsBitField} from "discord.js";
 import { Logger } from "tslog";
 import { Injections } from "../decorators/discord.decorator.js";
+import HostEventManager from "./HostEventManager.js";
 
 type BotManagerOptions = {
   id: string,
@@ -127,6 +128,7 @@ class BotManager {
         intents: BotManager.privateData?.intents,
       });
       BotManager.REST = new REST().setToken(BotManager.privateData.token);
+      HostEventManager.createInstance(BotManager.client);
     } catch (error) {
       BotManager.logger.fatal(`Failed to build client: \n${error}`);
     }
