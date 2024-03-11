@@ -19,7 +19,7 @@ export const Injections = () => {
     return Class;
   }
 
-  function Command(description: string) {
+  function Command(description: string, options?: any) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
       commandInjections.push({
         type: 'command',
@@ -27,6 +27,7 @@ export const Injections = () => {
         command: {
           name: key,
           description,
+          options,
           run: descriptor.value,
         }
       })

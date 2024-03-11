@@ -65,12 +65,18 @@
 
 
 
+  let firstRun = true;
   let currentData;
   $: data,  (()=>{
     // and here you do the update (its like watch in vuejs)
     // document.title = `Page ${data.title}`;
     console.log(data)
     currentData = data;
+    console.log(firstRun)
+    if (!firstRun) {
+      createWS();
+    }
+    firstRun = false;
   })();
 
   let ws: WebSocket | null = null;
@@ -98,7 +104,13 @@
     }
   }
 
-  onMount(() => {
+  const createWS = () => {
+    if (ws) {
+      ws.close();
+      isConnected = false;
+      currentMessages = [];
+    }
+
     ws = NewWS() as WebSocket;
     if (!ws) return;
 
@@ -142,13 +154,10 @@
         }))
       }
     }
+  }
 
-    return () => {
-      if (ws) {
-        ws.close();
-        isConnected = false;
-      }
-    }
+  onMount(() => {
+    createWS();
   })
 </script>
 

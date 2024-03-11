@@ -107,7 +107,7 @@ class BotManager {
   private async buildCommands() {
     // @ts-ignore
     BotManager.client.commands = BotManager.commands;
-    // await this.refreshCommands();
+    await this.refreshCommands();
     return this;
   }
 
