@@ -1,6 +1,6 @@
 import server from '../http/server.js';
 import { Injections } from "../decorators/discord.decorator.js";
-import {CommandInteraction, Message} from "discord.js";
+import {CommandInteraction, CommandInteractionOptionResolver, Message} from "discord.js";
 import {Logger} from "tslog";
 import HostEventManager from "./HostEventManager.js";
 
@@ -70,10 +70,10 @@ export class EventManager {
   @Event()
   public static async interactionCreate(interaction: CommandInteraction) {
     const {client} = interaction;
-    const {commandName} = interaction;
+    const subcommmand = (interaction.options as CommandInteractionOptionResolver).getSubcommand();
 
     // @ts-ignore
-    const command = client.commands.get(commandName);
+    const command = client.commands.get(subcommmand);
     if (!command) return;
 
     if (interaction.isCommand()) {

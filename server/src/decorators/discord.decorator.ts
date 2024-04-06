@@ -1,5 +1,6 @@
 import { v4 } from 'uuid'
 import {Logger} from "tslog";
+import { SlashCommandBuilder } from "discord.js";
 
 const logger = new Logger({
   name: 'InjectionManager',
@@ -13,9 +14,11 @@ export const Injections = () => {
   function Discord(Class: any) {
     INJECTIONS.set(Class, commandInjections);
     Class.__classname = Class.name as string;
-    Class.__id__ = v4() as string;
+    Class.__id = v4() as string;
+    Class.__name = Class.name.toLowerCase();
+    Class.__description = `Commands for ${Class.__name}`
 
-    logger.info(`${Class.__classname} instanced with id ${Class.__id__}`);
+    logger.info(`${Class.__classname} instanced with id ${Class.__id}`);
     return Class;
   }
 
@@ -28,6 +31,7 @@ export const Injections = () => {
           name: key,
           description,
           options,
+          type: 1,
           run: descriptor.value,
         }
       })

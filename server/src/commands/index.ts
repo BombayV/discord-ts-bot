@@ -1,5 +1,7 @@
-import { FunCommands } from "./FunCommands.js";
+import { Fun } from "./Fun.js";
+import { Info } from "./Info.js";
 
-export default {
-    FunCommands
-}
+export default [
+    Fun,
+    Info
+] as const;

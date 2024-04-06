@@ -12,12 +12,7 @@ const SIZES = {
 }
 
 @Discord
-export class FunCommands {
-  @Command('Ping the bot')
-  public async ping(interaction: ChatInputCommandInteraction) {
-    await interaction.editReply('Pong!');
-  }
-
+export class Fun {
   @Command('Say something')
   public async say(interaction: ChatInputCommandInteraction) {
     await interaction.editReply('This command is not implemented yet.');

@@ -17,19 +17,19 @@
   "exports": "./dist/index.js",
   "packageManager": "pnpm@9.0.0-alpha.1+sha256.b69b1d3f02c65bc22864fa219a175fdd2f36cd5f245da2915e87482f19338383",
   "devDependencies": {
-    "@types/node": "^20.11.16",
+    "@types/node": "^20.12.4",
     "@types/ws": "^8.5.10",
-    "prettier": "^3.2.4",
-    "tsc-watch": "^6.0.4",
+    "prettier": "^3.2.5",
+    "tsc-watch": "^6.2.0",
     "tslog": "^4.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.4"
   },
   "dependencies": {
     "@fastify/cors": "^8.5.0",
     "@fastify/websocket": "^8.3.1",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.1",
-    "fastify": "^4.26.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.2",
     "uuid": "^9.0.1"
   }
 }

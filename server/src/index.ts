@@ -1,10 +1,8 @@
 import dotenv from 'dotenv';
 import { IntentsBitField, ActivityType } from 'discord.js';
-import { botManager } from './managers/BotManager.js';
+import { BotManager } from './managers/BotManager.js';
 import { EventManager } from './managers/EventManager.js';
-import AllClasses from "./commands/index.js";
-
-const { FunCommands } = AllClasses;
+import AllCommands from "./commands/index.js";
 
 dotenv.config();
 
@@ -19,22 +17,23 @@ const intents = new IntentsBitField([
   'MessageContent'
 ]);
 
+const botManager = BotManager.getInstance();
 
-await botManager.
-  setPrivateData({
-    id: process.env.ID as string,
-    token: process.env.TOKEN as string,
-    intents: intents,
-    name: process.env.NAME as string,
-  })
-  .create(EventManager)
-  .create(FunCommands)
-  .buildClient()
-  .build();
+botManager.setPrivateData({
+  id: process.env.ID as string,
+  token: process.env.TOKEN as string,
+  intents: intents,
+  name: "Discord Bot",
+}).create(EventManager)
 
-botManager
-  .login()
-  .setPresence('online', {
+// Add all commands
+for (const Class of AllCommands) {
+  botManager.create(Class);
+}
+
+await botManager.buildClient();
+await botManager.login();
+botManager.setPresence('online', {
     name: 'with your mom',
     type: ActivityType.Playing
-  });
+});
