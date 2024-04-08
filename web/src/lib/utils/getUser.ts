@@ -5,7 +5,7 @@ export const getUser = async (token: string | undefined) => {
   if (!token) return null;
 
   try {
-    const rawResp = await fetch(`${import.meta.env.VITE_DISCORD_API_URL}/users/@me`, {
+    const rawResp = await fetch(`https://discordapp.com/api/users/@me`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`

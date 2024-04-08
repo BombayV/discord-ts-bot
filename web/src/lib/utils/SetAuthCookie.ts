@@ -5,6 +5,6 @@ export const setAuthCookie = (cookies: Cookies, name: string, value: string, exp
     expires: expires,
     path: '/',
     sameSite: 'strict',
-    secure: true,
+    secure: false,
   });
 }

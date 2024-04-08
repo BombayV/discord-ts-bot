@@ -43,5 +43,5 @@ export const AuthSetter = async (url: string, formData: URLSearchParams, fetch: 
   setAuthCookie(cookies, 'dc:access_token', resp.access_token, new Date(Date.now() + resp.expires_in));
   setAuthCookie(cookies, 'dc:refresh_token', resp.refresh_token, new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
 
-  redirect(302, '/');
+  throw redirect(302, '/');
 }

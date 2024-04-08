@@ -1,7 +1,8 @@
-import { REST, Routes, ActivityOptions, Client, Collection, IntentsBitField} from "discord.js";
+import {REST, Routes, ActivityOptions, Client, Collection, IntentsBitField, ClientEvents} from "discord.js";
 import { Logger } from "tslog";
 import { Injections } from "../decorators/discord.decorator.js";
 import HostEventManager from "./HostEventManager.js";
+import {BotCommand, BotEvent, CommandInjection} from "../../types";
 
 type BotManagerOptions = {
   id: string,
@@ -20,9 +21,12 @@ export class BotManager {
   private static privateData: BotManagerOptions | null = null;
   private static REST: REST | null = null;
   private static logger: Logger<string> | null = null;
-  private static commands = new Collection();
-  private static subcommands = new Collection();
-  private static events = new Collection();
+  private static commands = new Collection<string, BotCommand>();
+  private static subcommands = new Collection<string, CommandInjection>();
+  private static events = new Collection<string, BotEvent<EventListener>>();
+  private static guildLogs = new Collection<string, Collection<string, string>>();
+  private static guildCommands = new Collection<string, Collection<string, BotCommand>>();
+  private static guildLevels = undefined;
 
   private constructor() {
     BotManager.logger = new Logger({
@@ -71,16 +75,16 @@ export class BotManager {
     const instance = new Class();
     const commands = [];
     for (const val of getInjections().get(Class)) {
-      const { name, event, command } = val;
-      if (event) {
-        BotManager.events.set(name, event);
-        event.run.bind(instance);
+      const { kind, name } = val;
+      if (kind === 'event') {
+        BotManager.events.set(name, val);
+        val.run.bind(instance);
       }
 
-      if (command) {
-        commands.push(command);
-        BotManager.subcommands.set(name, command);
-        command.run.bind(instance);
+      if (kind === 'command') {
+        commands.push(val);
+        BotManager.subcommands.set(name, val);
+        val.run.bind(instance);
       }
     }
 
@@ -97,31 +101,31 @@ export class BotManager {
     return this;
   }
 
-  // Builds the events and adds them to the client
-  // for the bot to listen to.
+
   private buildEvents() {
-    // @ts-ignore
     BotManager.client.events = BotManager.events;
-    for (const [key, val] of BotManager.events) {
-      // @ts-ignore
-      BotManager.client.on(key, val.run);
+    for (const [eventName, val] of BotManager.events) {
+      BotManager.client.on(eventName, val.run);
     }
     return this;
   }
 
-  // Builds the commands and adds them to the client
-  // for the bot to listen to.
-  private async buildCommands() {
-    // @ts-ignore
+  private buildCommands() {
     BotManager.client.commands = BotManager.subcommands;
-    await this.refreshCommands();
+    return this;
+  }
+
+  private buildCooldowns() {
+    BotManager.client.cooldowns = new Collection<string, number>();
     return this;
   }
 
   // Builds the commands and events for the client.
   public async build() {
     this.buildEvents();
-    await this.buildCommands();
+    this.buildCooldowns();
+    this.buildCommands();
+    // await this.refreshCommands();
     BotManager.logger.silly('Commands and events built.');
     return this;
   }
@@ -175,6 +179,22 @@ export class BotManager {
       BotManager.logger.silly('Commands refreshed into client.');
     } catch (error) {
       BotManager.logger.fatal(`Failed to refresh commands: \n${error}`);
+    }
+  }
+
+  public async refreshGuildCommands(guildId: string): Promise<boolean> {
+    try {
+      // await BotManager.REST.put(Routes.applicationGuildCommands(BotManager.privateData.id, guildId), {
+      //   body: [...BotManager.commands.values()]
+      // });
+      await BotManager.REST.put(Routes.applicationCommands(BotManager.privateData.id), {
+        body: [...BotManager.commands.values()]
+      });
+      BotManager.logger.silly(`Commands refreshed for ${guildId} into client.`);
+      return true;
+    } catch (error) {
+      BotManager.logger.fatal(`Failed to refresh commands: \n${error}`);
+      return false;
     }
   }
 }
