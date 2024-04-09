@@ -1,7 +1,8 @@
 import { v4 } from 'uuid'
 import {Logger} from "tslog";
-import { ChannelType, PermissionFlagsBits } from "discord.js";
-import {Choice, CommandInjection, StringOption} from "../../types";
+import chalk from "chalk";
+import { ChannelType } from "discord.js";
+import {Choice, CommandInjection} from "../../types";
 
 const logger = new Logger({
   name: 'InjectionManager',
@@ -24,8 +25,7 @@ export const Injections = () => {
     Class.__id = v4() as string;
     Class.__name = Class.name.toLowerCase();
     Class.__description = `Commands for ${Class.__name}`
-
-    logger.info(`${Class.__classname} instanced with id ${Class.__id}`);
+    logger.info(`${chalk.greenBright(Class.__classname)} instanced with id ${chalk.yellowBright(Class.__id)}`);
     return Class;
   }
 
@@ -44,7 +44,8 @@ export const Injections = () => {
           cooldown,
           ephemeral
         })
-        logger.silly(`Command ${key} with 0 options injected in class ${target.constructor.name}`);
+        // `Command ${key} with 0 options injected in class ${target.constructor.name}`
+        logger.silly(`${chalk.blue('Command')} ${chalk.gray(key)} with ${chalk.yellow(0)} options injected in class ${chalk.green(target.constructor.name)}`);
       } else {
         const commandIndex = commandInjections.findIndex((injection) => injection.name === key);
         const foundCommand = commandInjections[commandIndex];
@@ -58,7 +59,7 @@ export const Injections = () => {
             return 0;
           });
         }
-        logger.silly(`Command ${key} with ${foundCommand.options.length} options injected in class ${target.constructor.name}`);
+        logger.silly(`${chalk.blue('Command')} ${chalk.gray(key)} with ${chalk.yellow(foundCommand.options.length)} options injected in class ${chalk.green(target.constructor.name)}`);
       }
 
       return descriptor;
@@ -308,7 +309,7 @@ export const Injections = () => {
         run: descriptor.value,
       })
 
-      logger.silly(`Event ${key} injected in class EventManager`);
+      logger.silly(`${chalk.blue('Event')} ${chalk.gray(key)} injected in class ${chalk.green('EventManager')}`);
       return descriptor;
     }
   }

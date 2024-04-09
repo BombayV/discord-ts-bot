@@ -3,6 +3,12 @@ import { Logger } from "tslog";
 import { Injections } from "../decorators/discord.decorator.js";
 import HostEventManager from "./HostEventManager.js";
 import {BotCommand, BotEvent, CommandInjection} from "../../types";
+import { GiveawayController } from "../controllers/GiveawayController.js";
+import { LogController } from "../controllers/LogController.js";
+import { CommandController } from "../controllers/CommandController.js";
+import {LevelController} from "../controllers/LevelController.js";
+import { DbController } from "../controllers/DbController.js";
+import chalk from "chalk";
 
 type BotManagerOptions = {
   id: string,
@@ -24,16 +30,18 @@ export class BotManager {
   private static commands = new Collection<string, BotCommand>();
   private static subcommands = new Collection<string, CommandInjection>();
   private static events = new Collection<string, BotEvent<EventListener>>();
-  private static guildLogs = new Collection<string, Collection<string, string>>();
-  private static guildCommands = new Collection<string, Collection<string, BotCommand>>();
-  private static guildLevels = undefined;
+  private static giveawayController: GiveawayController;
+  private static logController: LogController;
+  private static commandController: CommandController;
+  private static levelController: LevelController;
 
   private constructor() {
+    BotManager.giveawayController = GiveawayController.getInstance();
     BotManager.logger = new Logger({
       name: 'BotManager',
       type: 'pretty',
     });
-    BotManager.logger.warn('Bot instance created');
+    BotManager.logger.info(`${chalk.green('Bot')} instance created`);
   }
 
   // Setters
@@ -120,13 +128,47 @@ export class BotManager {
     return this;
   }
 
+  private async buildGiveaway() {
+    BotManager.giveawayController = GiveawayController.getInstance();
+    await BotManager.giveawayController.createTable();
+    return this;
+  }
+
+  private async buildLog() {
+    BotManager.logController = LogController.getInstance();
+    await BotManager.logController.createTable();
+    return this;
+  }
+
+  private async buildCommand() {
+    BotManager.commandController = CommandController.getInstance();
+    await BotManager.commandController.createTable();
+    return this;
+  }
+
+  private async buildLevel() {
+    BotManager.levelController = LevelController.getInstance();
+    await BotManager.levelController.createTable();
+    return this;
+  }
+
+
   // Builds the commands and events for the client.
   public async build() {
+    // Build discord.js client
     this.buildEvents();
     this.buildCooldowns();
     this.buildCommands();
+    await DbController.connect();
+
+    // Build db controllers
+    await this.buildGiveaway();
+    await this.buildLog();
+    await this.buildCommand();
+    await this.buildLevel();
+
     // await this.refreshCommands();
-    BotManager.logger.silly('Commands and events built.');
+    BotManager.logger.silly('Commands, events, cooldowns, and database built');
     return this;
   }
 

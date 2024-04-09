@@ -1,3 +1,5 @@
 .env
 node_modules
 dist
+
+server/src/db/bot.db

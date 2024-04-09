@@ -5,15 +5,14 @@ import {Logger} from "tslog";
 import HostEventManager from "./HostEventManager.js";
 
 const { Discord, Event } = Injections();
-const logger = new Logger({
-  name: 'EventManager',
-  type: 'pretty',
-  
-})
 
 @Discord
 export class EventManager {
   private static svFastify = server;
+  private static logger = new Logger({
+    name: 'EventManager',
+    type: 'pretty',
+  });
 
   @Event()
   public static async ready() {
@@ -22,17 +21,18 @@ export class EventManager {
         host: '0.0.0.0',
         port: 3000,
       })
-      // @ts-ignore
-      logger.warn(`Server listening on ${EventManager.svFastify.server.address().port}`);
+      const address = EventManager.svFastify.server.address();
+      const port = typeof address === 'string' ? address : address?.port;
+      EventManager.logger.warn(`Server listening on ${port}`);
     } catch (err) {
-      logger.error(`Error while starting server: ${err}`);
+      EventManager.logger.error(`Error while starting server: ${err}`);
       process.exit(1);
     }
   }
 
   @Event()
   public static error(error: Error) {
-    logger.error(error);
+    EventManager.logger.error(error);
   }
 
   @Event()
@@ -111,7 +111,7 @@ export class EventManager {
         }, 10000);
         await command.run(interaction);
       } catch (error) {
-        logger.error(error);
+        EventManager.logger.error(error);
         await interaction.editReply('There was an error while executing this command!');
       }
     }
