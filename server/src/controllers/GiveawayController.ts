@@ -8,6 +8,7 @@ export class GiveawayController extends DbController {
   public static instance: GiveawayController;
   protected static db: Database<sqlite3.Database, sqlite3.Statement>;
   protected static logger: Logger<string> | null = null;
+  protected static cache: Map<string, any> = new Map();
 
   private constructor() {
     super();
@@ -26,8 +27,10 @@ export class GiveawayController extends DbController {
     return GiveawayController.instance;
   }
 
-  public async getAll() {
-    await this.get(`SELECT * FROM giveaways`);
+  public async getAllForGuild(guildId: string) {
+    if (GiveawayController.cache.has(guildId)) {
+      return GiveawayController.cache.get(guildId);
+    }
   }
 
   public async createTable() {
@@ -56,7 +59,8 @@ export class GiveawayController extends DbController {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         giveaway_id INTEGER NOT NULL,
         user_id TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (giveaway_id) REFERENCES giveaways(id)
       )
     `;
 

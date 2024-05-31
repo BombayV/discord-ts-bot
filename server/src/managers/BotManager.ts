@@ -167,7 +167,6 @@ export class BotManager {
     await this.buildCommand();
     await this.buildLevel();
 
-    // await this.refreshCommands();
     BotManager.logger.silly('Commands, events, cooldowns, and database built');
     return this;
   }

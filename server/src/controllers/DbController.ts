@@ -45,6 +45,15 @@ export class DbController {
     }
   }
 
+  protected async prepare(query: string) {
+    try {
+      return await DbController.db.prepare(query);
+    } catch (err) {
+      DbController.logger.error(`Error while preparing query: ${err}`);
+      process.exit(1);
+    }
+  }
+
   protected async get(query: string) {
     try {
       return await DbController.db.get(query);
