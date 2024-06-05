@@ -1,2 +1,2 @@
 # discord-ts-bot
-Just some discord bot in TS used to learn more about TypeScript. Uses tc39 proposal decorators.
+A discord bot written in Typescript using TC39 Decorators, Discord JS, SQLite, Fastify. Uses endpoints and websockets for panel.
